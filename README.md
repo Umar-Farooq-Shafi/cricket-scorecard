@@ -21,3 +21,7 @@ Scan the QR code with Expo Go, or press `a` for an Android emulator. On Windows,
 - Editable fantasy-points settings
 
 The original pasted source ended partway through its `Match` component. Missing screens and scoring behavior were completed based on the state shape and menu routes present in that source.
+
+## Build an Android APK
+
+Run the **Build Android APK** workflow from the repository's Actions page. The completed run provides a `cricket-scorecard-android` artifact containing the standalone APK.
