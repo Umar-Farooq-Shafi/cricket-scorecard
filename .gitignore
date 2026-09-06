@@ -39,3 +39,9 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Local Android build artifacts
+builds/*.apk
+
+# Local transcription tooling and temporary files
+tmp/
