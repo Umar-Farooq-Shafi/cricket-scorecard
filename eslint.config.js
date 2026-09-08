@@ -27,6 +27,13 @@ module.exports = defineConfig([
   },
   {
     files: ['tests/**/*.js', 'src/domain.js', 'eslint.config.js'],
-    languageOptions: { globals: { require: 'readonly', module: 'readonly', process: 'readonly' } },
+    languageOptions: {
+      globals: {
+        require: 'readonly',
+        module: 'readonly',
+        process: 'readonly',
+        __dirname: 'readonly',
+      },
+    },
   },
 ]);

@@ -352,7 +352,7 @@ export default function Live({ match: m, data, commit, go, back, busy }) {
         <Button secondary disabled={!ready} onPress={() => act({ type: 'swap' })}>
           Swap strike
         </Button>
-        <Button secondary disabled={busy || s.needBatter} onPress={() => setDialog('bowler')}>
+        <Button secondary disabled={busy || !!s.needBatter} onPress={() => setDialog('bowler')}>
           Change / injured bowler
         </Button>
         <Button secondary onPress={() => go('summary', { matchId: m.id })}>
