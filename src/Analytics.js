@@ -28,6 +28,8 @@ const metrics = [
   ['dots', 'Dot balls'],
   ['fiveWickets', 'Five-wicket hauls'],
   ['catches', 'Catches'],
+  ['battingPoints', 'Batting fantasy points'],
+  ['bowlingPoints', 'Bowling fantasy points'],
   ['points', 'Fantasy points'],
   ['pointsPerMatch', 'Points / match'],
 ];
@@ -286,14 +288,19 @@ export default function Analytics({ mode, data, commit, go, back, playerId, busy
             ))
           ) : (
             <>
+              <Text style={styles.muted}>
+                Batting and bowling rankings use their own fantasy points. Overall fantasy points
+                include batting, bowling and catches.
+              </Text>
               <Board
                 title="Batting rankings"
                 rows={rows}
-                metric="runs"
-                label="RUNS"
+                metric="battingPoints"
+                label="BAT PTS"
                 data={data}
                 go={go}
                 extraColumns={[
+                  { key: 'runs', label: 'RUNS' },
                   { key: 'average', label: 'AVG' },
                   { key: 'strikeRate', label: 'SR' },
                 ]}
@@ -301,11 +308,12 @@ export default function Analytics({ mode, data, commit, go, back, playerId, busy
               <Board
                 title="Bowling rankings"
                 rows={rows}
-                metric="wickets"
-                label="WICKETS"
+                metric="bowlingPoints"
+                label="BOWL PTS"
                 data={data}
                 go={go}
                 extraColumns={[
+                  { key: 'wickets', label: 'WICKETS' },
                   { key: 'economy', label: 'ER' },
                   { key: 'fiveWickets', label: '5W' },
                 ]}

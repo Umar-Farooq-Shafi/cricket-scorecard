@@ -375,6 +375,8 @@ function statistics(matches, registry, points = POINTS, filters = {}) {
       maidens: 0,
       fiveWickets: 0,
       catches: 0,
+      battingPoints: 0,
+      bowlingPoints: 0,
       points: 0,
       dismissalTypes: {},
     });
@@ -417,7 +419,9 @@ function statistics(matches, registry, points = POINTS, filters = {}) {
         }
         if (p.out)
           a.dismissalTypes[p.dismissal.kind] = (a.dismissalTypes[p.dismissal.kind] || 0) + 1;
-        a.points += fantasy(p, null, points);
+        const battingPoints = fantasy(p, null, points);
+        a.battingPoints += battingPoints;
+        a.points += battingPoints;
       });
       Object.values(s.bowlers).forEach((b) => {
         const a = get(b.id);
@@ -427,7 +431,9 @@ function statistics(matches, registry, points = POINTS, filters = {}) {
         a.dots += b.dots;
         a.maidens += b.maidens;
         a.fiveWickets += b.wickets >= 5 ? 1 : 0;
-        a.points += fantasy(null, b, points);
+        const bowlingPoints = fantasy(null, b, points);
+        a.bowlingPoints += bowlingPoints;
+        a.points += bowlingPoints;
       });
       s.deliveries.forEach((d) => {
         if (d.wicket?.kind === 'caught') {
@@ -444,6 +450,8 @@ function statistics(matches, registry, points = POINTS, filters = {}) {
     average: rate(p.runs, p.dismissals),
     strikeRate: rate(p.runs, p.balls, 100),
     economy: rate(p.bowlRuns, p.bowlBalls, 6),
+    battingPoints: Math.round(p.battingPoints * 100) / 100,
+    bowlingPoints: Math.round(p.bowlingPoints * 100) / 100,
     points: Math.round(p.points * 100) / 100,
     pointsPerMatch: rate(p.points, p.matches),
   }));

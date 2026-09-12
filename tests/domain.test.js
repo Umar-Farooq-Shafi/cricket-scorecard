@@ -168,6 +168,51 @@ test('fantasy milestones and duck bonuses are evaluated per innings', () => {
   assert.equal(p1.notOuts, 2);
   assert.equal(p1.average, null);
   assert.equal(p1.points, 82);
+  assert.equal(p1.battingPoints, 82);
+  assert.equal(p1.bowlingPoints, 0);
+});
+test('rankings separate batting and bowling fantasy points from runs, wickets and catches', () => {
+  let m = match({ enforceConsecutive: false });
+  for (const runs of [2, 2, 2, 1, 6]) m = ball(m, runs);
+  m = r.command(m, { type: 'bowler', player: 'y' });
+  m = ball(m);
+  m = r.command(m, { type: 'bowler', player: 'x' });
+  m = ball(m, 0, 'none', { kind: 'caught', player: 'a', fielder: 'z' });
+  m = r.command(m, { type: 'batter', slot: 'striker', player: 'c' });
+  m = r.command(m, { type: 'bowler', player: 'y' });
+  m = ball(m);
+  m = r.command(m, { type: 'end' });
+  m = r.startInnings(m, 'x', 'y', 'a');
+  m = ball(m, 4);
+  m = ball(m, 0, 'none', { kind: 'caught', player: 'x', fielder: 'b' });
+  m = r.command(m, { type: 'end' });
+  const rows = r.statistics([m], registry);
+  const byId = Object.fromEntries(rows.map((p) => [p.id, p]));
+  assert.equal(byId.a.runs, 7);
+  assert.equal(byId.b.runs, 6);
+  assert.equal(byId.a.battingPoints, 3.5);
+  assert.equal(byId.b.battingPoints, 4);
+  assert.equal(byId.a.bowlingPoints, 10.5);
+  assert.equal(byId.a.points, 14);
+  assert.equal(byId.b.bowlingPoints, 0);
+  assert.equal(byId.b.points, 8);
+  assert.equal(byId.z.battingPoints, 0);
+  assert.equal(byId.z.bowlingPoints, 0);
+  assert.equal(byId.z.points, 4);
+  assert.equal(r.sorted(rows, 'runs')[0].id, 'a');
+  assert.equal(r.sorted(rows, 'battingPoints')[0].id, 'b');
+  assert.equal(r.sorted(rows, 'points')[0].id, 'a');
+
+  const custom = r.statistics([m], registry, { dot_ball: 12, catch: 7 });
+  const y = custom.find((p) => p.id === 'y');
+  assert.equal(y.wickets, 0);
+  assert.equal(y.bowlingPoints, 24);
+  assert.equal(r.sorted(custom, 'bowlingPoints')[0].id, 'y');
+  assert.equal(custom.find((p) => p.id === 'b').points, 11);
+  for (const p of custom) {
+    assert.equal(p.points, p.battingPoints + p.bowlingPoints + p.catches * 7);
+  }
+  assert.deepEqual(r.statistics([m], registry, undefined, { team: 'Other team' }), []);
 });
 test('maiden over includes wickets but excludes an over with bowler-charged extras', () => {
   let m = match();
